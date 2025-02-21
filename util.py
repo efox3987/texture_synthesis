@@ -1,5 +1,14 @@
 import numpy as np
 from PIL import Image
+from numpy.typing import NDArray
+
+def print_report(image: NDArray, visited: set, times):
+    print(f"Progress: {((len(visited)/(image.shape[0] * image.shape[1])) * 100):.2f}%")
+    seconds = np.mean(times) * (image.shape[0] * image.shape[1] - len(visited))
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    print(f"Estimated time remaining: {int(hours)}:{int(minutes)}:{int(seconds)}")
+    print("=========================================")
 
 """
     Function to create a new image using a seed from the original image
@@ -7,11 +16,10 @@ from PIL import Image
     :return: numpy array representing the new image and the original image data
     :const: HSS: seed size, SCALE: SCALE factor
 """
-def create_new_image(image):
+def create_new_image(image, scale):
     # SCALE factor
-    SCALE = 0.1
-    new_im_width = int(SCALE * image.size[0])
-    new_im_height = int(SCALE * image.size[1])
+    new_im_width = int(scale * image.size[0])
+    new_im_height = int(scale * image.size[1])
 
     # Create a new image with the new dimensions
     new_im = np.zeros((new_im_height, new_im_width, 3), dtype=np.uint8)
